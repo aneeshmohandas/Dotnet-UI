@@ -1,0 +1,290 @@
+[
+  {
+    "templateName": "Console Application",
+    "shortName": "console",
+    "language": "C#,F#,VB",
+    "tags": "Common/Console",
+    "enabled": true,
+    "order": "3"
+  },
+  {
+    "templateName": "Class library",
+    "shortName": "classlib",
+    "language": "C#,F#,VB",
+    "tags": "Common/Library",
+    "enabled": true,
+    "order": "2"
+  },
+  {
+    "templateName": "WPF Application",
+    "shortName": "wpf",
+    "language": "C#,VB",
+    "tags": "Common/WPF",
+    "enabled": true,
+    "order": "18"
+  },
+  {
+    "templateName": "WPF Class library",
+    "shortName": "wpflib",
+    "language": "C#,VB",
+    "tags": "Common/WPF",
+    "enabled": true,
+    "order": "17"
+  },
+  {
+    "templateName": "WPF Custom Control Library",
+    "shortName": "wpfcustomcontrollib",
+    "language": "C#,VB",
+    "tags": "Common/WPF",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "WPF User Control Library",
+    "shortName": "wpfusercontrollib",
+    "language": "C#,VB",
+    "tags": "Common/WPF",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Windows Forms App",
+    "shortName": "winforms",
+    "language": "C#,VB",
+    "tags": "Common/WinForms",
+    "enabled": true,
+    "order": "16"
+  },
+  {
+    "templateName": "Windows Forms Control Library",
+    "shortName": "winformscontrollib",
+    "language": "C#,VB",
+    "tags": "Common/WinForms",
+    "enabled": false,
+    "order": "15"
+  },
+  {
+    "templateName": "Windows Forms Class Library",
+    "shortName": "winformslib",
+    "language": "C#,VB",
+    "tags": "Common/WinForms",
+    "enabled": true,
+    "order": "14"
+  },
+  {
+    "templateName": "Worker Service",
+    "shortName": "worker",
+    "language": "C#,F#",
+    "tags": "Common/Worker/Web",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "MSTest Test Project",
+    "shortName": "mstest",
+    "language": "C#,F#,VB",
+    "tags": "Test/MSTest",
+    "enabled": true,
+    "order": "13"
+  },
+  {
+    "templateName": "NUnit 3 Test Project",
+    "shortName": "nunit",
+    "language": "C#,F#,VB",
+    "tags": "Test/NUnit",
+    "enabled": true,
+    "order": "12"
+  },
+  {
+    "templateName": "NUnit 3 Test Item",
+    "shortName": "nunit-test",
+    "language": "C#,F#,VB",
+    "tags": "Test/NUnit",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "xUnit Test Project",
+    "shortName": "xunit",
+    "language": "C#,F#,VB",
+    "tags": "Test/xUnit",
+    "enabled": true,
+    "order": "11"
+  },
+  {
+    "templateName": "Razor Component",
+    "shortName": "razorcomponent",
+    "language": "C#",
+    "tags": "Web/ASP.NET",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Razor Page",
+    "shortName": "page",
+    "language": "C#",
+    "tags": "Web/ASP.NET",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "MVC ViewImports",
+    "shortName": "viewimports",
+    "language": "C#",
+    "tags": "Web/ASP.NET",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "MVC ViewStart",
+    "shortName": "viewstart",
+    "language": "C#",
+    "tags": "Web/ASP.NET",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Blazor Server App",
+    "shortName": "blazorserver",
+    "language": "C#",
+    "tags": "Web/Blazor",
+    "enabled": true,
+    "order": "10"
+  },
+  {
+    "templateName": "Blazor WebAssembly App",
+    "shortName": "blazorwasm",
+    "language": "C#",
+    "tags": "Web/Blazor/WebAssembly",
+    "enabled": true,
+    "order": "9"
+  },
+  {
+    "templateName": "ASP.NET Core Empty",
+    "shortName": "web",
+    "language": "C#,F#",
+    "tags": "Web/Empty",
+    "enabled": true,
+    "order": "3"
+  },
+  {
+    "templateName": "ASP.NET Core Web App (Model-View-Controller)",
+    "shortName": "mvc",
+    "language": "C#,F#",
+    "tags": "Web/MVC",
+    "enabled": true,
+    "order": "4"
+  },
+  {
+    "templateName": "ASP.NET Core Web App",
+    "shortName": "webapp",
+    "language": "C#",
+    "tags": "Web/MVC/Razor Pages",
+    "enabled": true,
+    "order": "5"
+  },
+  {
+    "templateName": "ASP.NET Core with Angular",
+    "shortName": "angular",
+    "language": "C#",
+    "tags": "Web/MVC/SPA",
+    "enabled": true,
+    "order": "6"
+  },
+  {
+    "templateName": "ASP.NET Core with React.js",
+    "shortName": "react",
+    "language": "C#",
+    "tags": "Web/MVC/SPA",
+    "enabled": true,
+    "order": "7"
+  },
+  {
+    "templateName": "ASP.NET Core with React.js and Redux",
+    "shortName": "reactredux",
+    "language": "C#",
+    "tags": "Web/MVC/SPA",
+    "enabled": true,
+    "order": "8"
+  },
+  {
+    "templateName": "Razor Class Library",
+    "shortName": "razorclasslib",
+    "language": "C#",
+    "tags": "Web/Razor/Library",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "ASP.NET Core Web API",
+    "shortName": "webapi",
+    "language": "C#,F#",
+    "tags": "Web/WebAPI",
+    "enabled": true,
+    "order": "1"
+  },
+  {
+    "templateName": "ASP.NET Core gRPC Service",
+    "shortName": "grpc",
+    "language": "C#",
+    "tags": "Web/gRPC",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "dotnet gitignore file",
+    "shortName": "gitignore",
+    "language": "",
+    "tags": "Config",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "global.json file",
+    "shortName": "globaljson",
+    "language": "",
+    "tags": "Config",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "NuGet Config",
+    "shortName": "nugetconfig",
+    "language": "",
+    "tags": "Config",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Dotnet local tool manifest file",
+    "shortName": "tool-manifest",
+    "language": "",
+    "tags": "Config",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Web Config",
+    "shortName": "webconfig",
+    "language": "",
+    "tags": "Config",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Solution File",
+    "shortName": "sln",
+    "language": "",
+    "tags": "Solution",
+    "enabled": false,
+    "order": ""
+  },
+  {
+    "templateName": "Protocol Buffer File",
+    "shortName": "proto",
+    "language": "",
+    "tags": "Web/gRPC",
+    "enabled": false,
+    "order": ""
+  }
+]
