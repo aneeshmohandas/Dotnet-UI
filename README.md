@@ -23,4 +23,8 @@ Create and manage Dotnet core projects using a graphical interface with the ```d
 > dotnet dotnetui
 ```
 Output will be available in this url ```http://localhost:3000```
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/48398852/129483966-ebc93e45-73a6-4305-8e98-42fa440ccd09.gif" alt="animated" />
+</p>
+
 
