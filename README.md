@@ -3,10 +3,10 @@ Create and manage Dotnet core projects using a graphical interface with the ```d
 
 ## Features
 
-- Create dotnet core solutions and add projects to solution.
-- Add nuget packages to projects.
-- Create reference from one project to another.
-- Build,Clean and Restore solutions.
+- Create dotnet core solutions and add projects to the solution.
+- Add NuGet packages to projects.
+- Create a reference from one project to another.
+- Build, Clean, and Restore solutions.
 - Create publish profiles and publish solutions using that profiles.
 
 
@@ -23,3 +23,4 @@ Create and manage Dotnet core projects using a graphical interface with the ```d
 > dotnet dotnetui
 ```
 Output will be available in this url ```http://localhost:3000```
+
