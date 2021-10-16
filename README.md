@@ -1,5 +1,5 @@
 # Dotnet-UI
-Create and manage Dotnet core projects using a graphical interface with the ```dotnetui``` command.
+Create and manage Dotnet core projects using a graphical interface with the ```ui``` command.
 
 ## Features
 
@@ -20,7 +20,7 @@ Create and manage Dotnet core projects using a graphical interface with the ```d
 ## RUN
 ``` 
 > cd dotnet-tools
-> dotnet dotnetui
+> dotnet ui
 ```
 Output will be available in this url ```http://localhost:3000```
 <p align="center">
