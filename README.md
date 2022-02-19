@@ -9,6 +9,9 @@ Create and manage Dotnet core projects using a graphical interface with the ```u
 - Build, Clean, and Restore solutions.
 - Create publish profiles and publish solutions using that profiles.
 
+![image](https://user-images.githubusercontent.com/48398852/154786193-b41b520e-c076-430d-9d3e-d6969210c186.png)
+
+
 
 ## Install (Local only)
 ```
