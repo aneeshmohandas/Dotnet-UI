@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using DotnetUI.Common;
 using DotnetUI.Hubs;
+using DotnetUI.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 namespace DotnetUI.Service
@@ -12,11 +13,13 @@ namespace DotnetUI.Service
         IWebHostEnvironment _env;
         IHubContext<ApplicationHub> _appHub;
         IActivityService _actServ;
-        public ProjectManagerService(IWebHostEnvironment env, IHubContext<ApplicationHub> appHub, IActivityService actServ)
+        IExecuteCommand _cmd;
+        public ProjectManagerService(IWebHostEnvironment env, IHubContext<ApplicationHub> appHub, IActivityService actServ, IExecuteCommand cmd)
         {
             _env = env;
             _appHub = appHub;
             _actServ = actServ;
+            _cmd = cmd;
         }
         public void ManageProjectCreationRequest(SolutionCreationRequest request)
         {
@@ -54,7 +57,7 @@ namespace DotnetUI.Service
                     if (!string.IsNullOrEmpty(pro) && pro != p.Name)
                     {
                         var referenceProject = request.Projects.First(x => x.Name == pro);
-                        CreateProjectReference(wrkingDirectory, $"{referenceProject.Name}\\{referenceProject.Name}.csproj", $"{p.Name}\\{p.Name}.csproj");
+                        CreateProjectReference(wrkingDirectory, $"{Path.Join(referenceProject.Name, referenceProject.Name + DotnetUiHelper.ProjectExtension)}", $"{Path.Join(p.Name, p.Name + DotnetUiHelper.ProjectExtension)}");
                     }
                 }
             });
@@ -72,23 +75,16 @@ namespace DotnetUI.Service
         }
         public void AddPackage(string ProjectLocation, PackageModel package)
         {
-            var command = DotnetUiHelper.ParseCommands(new string[] { $" dotnet add {ProjectLocation} package  {package.Id} -v {package.Version} " }).ToList();
+            var command = $" dotnet add {ProjectLocation} package  {package.Id} -v {package.Version}";
             package.IsNew = false;
             package.AddedOn = DateTime.Now;
             package.PackageId = Guid.NewGuid();
-            foreach (var comm in command)
-            {
-                DotnetUiHelper.RunCommand(comm, _appHub, true);
-            }
+            _cmd.RunCommand(command);
         }
-
         public void AddProjectToSolution(string SolutionLocation, string ProjectLocation)
         {
-            var command = DotnetUiHelper.ParseCommands(new string[] { $" dotnet sln  add {ProjectLocation} " }, SolutionLocation).ToList();
-            foreach (var comm in command)
-            {
-                DotnetUiHelper.RunCommand(comm, _appHub, true);
-            }
+            var command = $" dotnet sln  add {ProjectLocation} ";
+            _cmd.RunCommand(command, SolutionLocation);
         }
 
         public void CreateProject(ProjectCreationModel model, string Location)
@@ -97,26 +93,22 @@ namespace DotnetUI.Service
             model.Id = Guid.NewGuid();
             var type = templates.First(x => x.TemplateName == model.Type).ShortName;
             model.CreatedTime = DateTime.Now;
-            var command = DotnetUiHelper.ParseCommands(new string[] { $" dotnet new {type} -n {model.Name} -o {Location}\\{model.Name} " }).ToList();
-            foreach (var comm in command)
-            {
-                DotnetUiHelper.RunCommand(comm, _appHub, true);
-            }
+            var command = $" dotnet new {type} -n {model.Name} -o {Path.Join(Location,model.Name)} ";
+            _cmd.RunCommand(command);
+
         }
 
         public void CreateProjectReference(string WorkingDirectory, string FromLocation, string ToLocation)
         {
-            var command = DotnetUiHelper.ParseCommands(new string[] { $" dotnet add  {ToLocation} reference {FromLocation} " }, WorkingDirectory).ToList();
-            foreach (var comm in command)
-            {
-                DotnetUiHelper.RunCommand(comm, _appHub, true);
-            }
+            var command = $" dotnet add  {ToLocation} reference {FromLocation} ";
+            _cmd.RunCommand(command, WorkingDirectory);
+
         }
 
         public bool CreateSolution(string SolutionName, string Location)
         {
-            var command = DotnetUiHelper.ParseCommands($" dotnet new sln -n {SolutionName} -o {Location}\\{SolutionName}");
-            var result = DotnetUiHelper.RunCommand(command, _appHub, true, $" Creating Solution {SolutionName} \n");
+            var command = $" dotnet new sln -n {SolutionName} -o {Path.Join(Location,SolutionName)}";
+            var result = _cmd.RunCommand(command, CommandDesc: $" Creating Solution {SolutionName} \n");
             return result.Succeed;
         }
         public void RemovePackage(string ProjectLocation, PackageModel package)
@@ -125,33 +117,33 @@ namespace DotnetUI.Service
 
         public void CreateGitIgnoreFile(string Location)
         {
-            var command = DotnetUiHelper.ParseCommands($" dotnet new gitignore  -o {Location} ");
-            DotnetUiHelper.RunCommand(command, _appHub, true);
+            var command = $" dotnet new gitignore  -o {Location} ";
+            _cmd.RunCommand(command);
         }
 
         public void RestoreSolution(string Location)
         {
-            var command = DotnetUiHelper.ParseCommands($" dotnet restore {Location} ");
-            DotnetUiHelper.RunCommand(command, _appHub, true);
+            var command = $" dotnet restore {Location} ";
+            _cmd.RunCommand(command);
         }
 
         public void CleanSolution(string Location)
         {
-            var command = DotnetUiHelper.ParseCommands($" dotnet clean {Location} ");
-            DotnetUiHelper.RunCommand(command, _appHub, true, "");
+            var command = $" dotnet clean {Location} ";
+            _cmd.RunCommand(command);
         }
 
         public void BuildSolution(string Location)
         {
-            var command = DotnetUiHelper.ParseCommands($" dotnet build {Location} ");
-            DotnetUiHelper.RunCommand(command, _appHub, true, " Building Solution...\n ");
+            var command = $" dotnet build {Location} ";
+            _cmd.RunCommand(command, CommandDesc: " Building Solution...\n ");
 
         }
 
         public void PublishSolution(PublishProfileCreateRequest request)
         {
-            var command = DotnetUiHelper.ParseCommands($" dotnet publish {request.Location} -c {request.Configuration} -o {request.OutputDirectory} ");
-            DotnetUiHelper.RunCommand(command, _appHub, true, " Publishing Solution...\n ");
+            var command = $" dotnet publish {request.Location} -c {request.Configuration} -o {request.OutputDirectory} ";
+            _cmd.RunCommand(command, CommandDesc: " Publishing Solution...\n ");
 
         }
     }

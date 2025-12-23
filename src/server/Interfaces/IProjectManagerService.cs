@@ -1,4 +1,4 @@
-namespace DotnetUI.Service
+namespace DotnetUI.Interfaces
 {
     public interface IProjectManagerService
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DotnetUI.Common;
-using DotnetUI.Service;
+using DotnetUI.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,8 @@
 using System;
 using System.Net;
+using DotnetUI.Filters;
 using DotnetUI.Hubs;
+using DotnetUI.Interfaces;
 using DotnetUI.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,8 +30,17 @@ namespace DotnetUI
            {
                spa.RootPath = "wwwroot";
            });
-
-            services.AddControllers();
+            //    services.AddDistributedMemoryCache();
+            //     services.AddSession(options =>
+            //             {
+            //                 options.IdleTimeout = TimeSpan.FromHours(10);
+            //                 options.Cookie.HttpOnly = true;
+            //                 options.Cookie.IsEssential = true;
+            //                 options.Cookie.
+            //             });
+            services.AddControllers(
+                o => o.Filters.Add(typeof(CustomExceptionFilter))
+            );
             services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
@@ -38,6 +49,7 @@ namespace DotnetUI
             //services 
             services.AddScoped<IProjectManagerService, ProjectManagerService>();
             services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IExecuteCommand, ExecuteCommand>();
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
@@ -46,7 +58,7 @@ namespace DotnetUI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IExecuteCommand _cmd)
         {
             app.UseStaticFiles();
             if (env.IsDevelopment())
@@ -55,6 +67,7 @@ namespace DotnetUI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DotnetUI v1"));
             }
+            // app.UseSession();
             app.UseCors("AllowSpecificOrigin");
             // app.UseHttpsRedirection();
             if (env.WebRootPath == null)
@@ -74,7 +87,7 @@ namespace DotnetUI
                 env.WebRootPath = env.ContentRootPath + "/wwwroot";
 
             }
-            DotnetUiHelper.AppIntialSetup(env);
+            DotnetUiHelper.AppIntialSetup(_cmd, env);
             app.UseRouting();
 
             app.UseAuthorization();
@@ -82,9 +95,10 @@ namespace DotnetUI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
                 endpoints.MapHub<ApplicationHub>("/appHub");
             });
-            app.UseSpaStaticFiles();
+            // app.UseSpaStaticFiles();
 
             app.UseSpa(configuration: builder =>
             {

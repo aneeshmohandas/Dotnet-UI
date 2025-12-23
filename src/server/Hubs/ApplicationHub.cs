@@ -1,8 +1,9 @@
 using DotnetUI.Common;
-using DotnetUI.Service;
+using DotnetUI.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace DotnetUI.Hubs
 
             var wrkingDirectory = DotnetUiHelper.GetWorkingDirectory(currentSolution);
             var project = currentSolution.Projects.First(x => x.Id == model.ProjectId);
-            _service.AddPackage(wrkingDirectory + "\\" + project.Name + "\\" + project.Name + ".csproj", model.Package);
+            _service.AddPackage(Path.Join(wrkingDirectory, project.Name, project.Name + ".csproj"), model.Package);
             currentSolution.LastModifiedTime = DateTime.Now;
             project.LastModifiedTime = DateTime.Now;
             project.Packages.Add(model.Package);
@@ -62,17 +63,17 @@ namespace DotnetUI.Hubs
             var wrkingDirectory = DotnetUiHelper.GetWorkingDirectory(currentSolution);
             _service.CreateProject(model.Project, wrkingDirectory);
             if (currentSolution.CreateSolution)
-                _service.AddProjectToSolution(wrkingDirectory, $" {model.Project.Name}\\{model.Project.Name}.csproj");
+                _service.AddProjectToSolution(wrkingDirectory, $"  {Path.Join(model.Project.Name, model.Project.Name + DotnetUiHelper.ProjectExtension)}");
             model.Project.Packages.ForEach(p =>
             {
-                _service.AddPackage(wrkingDirectory + "\\" + model.Project.Name + "\\" + model.Project.Name + ".csproj", p);
+                _service.AddPackage(Path.Join(wrkingDirectory, model.Project.Name, model.Project.Name + DotnetUiHelper.ProjectExtension), p);
             });
             foreach (var pro in model.Project.LinkProject)
             {
                 if (!string.IsNullOrEmpty(pro) && pro != model.Project.Name)
                 {
                     var referenceProject = currentSolution.Projects.First(x => x.Name == pro);
-                    _service.CreateProjectReference(wrkingDirectory, $"{referenceProject.Name}\\{referenceProject.Name}.csproj", $"{model.Project.Name}\\{model.Project.Name}.csproj");
+                    _service.CreateProjectReference(wrkingDirectory, $"{Path.Join(referenceProject.Name, referenceProject.Name + DotnetUiHelper.ProjectExtension)}", $"{Path.Join(model.Project.Name, model.Project.Name + DotnetUiHelper.ProjectExtension)}");
                 }
             }
             currentSolution.LastModifiedTime = DateTime.Now;

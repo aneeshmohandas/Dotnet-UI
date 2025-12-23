@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DotnetUI.Service
+namespace DotnetUI.Interfaces
 {
     public interface IActivityService
     {

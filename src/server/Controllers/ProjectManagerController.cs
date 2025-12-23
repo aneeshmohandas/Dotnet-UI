@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using DotnetUI.Service;
+using DotnetUI.Interfaces;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetUI
@@ -14,6 +15,7 @@ namespace DotnetUI
         {
             _srv = srv;
             _env = env;
+           
         }
         [HttpGet]
         [Route("/api/dotnetui/ProjectManager/List")]

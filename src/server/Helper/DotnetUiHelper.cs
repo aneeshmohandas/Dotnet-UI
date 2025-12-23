@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using DotnetUI.Hubs;
+using DotnetUI.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -67,94 +68,7 @@ namespace DotnetUI
             }
             return result;
         }
-        public static IEnumerable<ProcessStartInfo> ParseCommands(string[] args, string WorkingDirectory = "")
-        {
-            var argsPrepend = "";
-            var shellName = "/bin/bash";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                shellName = "cmd";
-                argsPrepend = "/c ";
-            }
-
-            return args
-                .Select(q => new ProcessStartInfo()
-                {
-                    FileName = shellName,
-                    Arguments = argsPrepend + q,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    WorkingDirectory = WorkingDirectory
-                }).ToList();
-        }
-        public static ProcessStartInfo ParseCommands(string args, string WorkingDirectory = "")
-        {
-            var argsPrepend = "";
-            var shellName = "/bin/bash";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                shellName = "cmd";
-                argsPrepend = "/c ";
-            }
-
-            return new ProcessStartInfo()
-            {
-                FileName = shellName,
-                Arguments = argsPrepend + args,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                WorkingDirectory = WorkingDirectory
-            };
-        }
-
-        public static ExectedCommandResult RunCommand(ProcessStartInfo processInfo, IHubContext<ApplicationHub> appHub, bool sendMessage = false, string CommandDesc = "")
-        {
-            var result = new ExectedCommandResult();
-            if (sendMessage && !string.IsNullOrEmpty(CommandDesc))
-                appHub.Clients.All.SendAsync("ReceiveMessage", CommandDesc);
-            result = RunCommand(processInfo);
-            if (!string.IsNullOrEmpty(result.Message) || !string.IsNullOrEmpty(result.Error))
-            {
-                if (sendMessage)
-                    appHub.Clients.All.SendAsync("ReceiveMessage", result.Message);
-            }
-            return result;
-        }
-        public static ExectedCommandResult RunCommand(ProcessStartInfo processInfo)
-        {
-            var result = new ExectedCommandResult();
-            var process = new Process()
-            {
-                StartInfo = processInfo,
-            };
-            process.Start();
-
-            var output = "";
-            var sbMsg = new StringBuilder();
-            var sbError = new StringBuilder();
-            var err = "";
-            while (!process.StandardError.EndOfStream)
-            {
-                sbError.Append(process.StandardError.ReadToEnd());
-            }
-            err = sbError.ToString();
-            while (!process.StandardOutput.EndOfStream)
-            {
-                sbMsg.Append(process.StandardOutput.ReadToEnd());
-            }
-            process.WaitForExit();
-            var code = process.ExitCode;
-            output = sbMsg.ToString();
-            if (!string.IsNullOrEmpty(output))
-            {
-                result.Succeed = code == 0 ? true : false;
-                result.Message = output;
-                result.Error = err;
-            }
-            return result;
-        }
+       
         public static List<ProjectTemplateModel> GetProjectTemplates(IWebHostEnvironment env)
         {
             var result = new List<ProjectTemplateModel>();
@@ -284,7 +198,7 @@ namespace DotnetUI
             return true;
 
         }
-        public static bool AppIntialSetup(IWebHostEnvironment _env)
+        public static bool AppIntialSetup(IExecuteCommand _cmd,IWebHostEnvironment _env)
         {
             var info = GetSystemInfo(_env);
             if (info.Count == 0)
@@ -295,10 +209,10 @@ namespace DotnetUI
                     return false;
                 }
                 info.Add(osInfo);
-                var dotnetVersion = GetDotnetVersion(_env, osInfo.Value);
+                var dotnetVersion = GetDotnetVersion(_cmd,_env, osInfo.Value);
                 if (dotnetVersion != null && dotnetVersion.Count > 0)
                     info.AddRange(dotnetVersion);
-                var editorDetails = GetCodeEditorVersion(_env);
+                var editorDetails = GetCodeEditorVersion(_cmd,_env);
                 if (editorDetails != null)
                     info.Add(editorDetails);
                 var defaultWrkingDirectory = new AppConfigurationSystemInfo
@@ -320,9 +234,9 @@ namespace DotnetUI
 
         }
 
-        public static List<AppConfigurationSystemInfo> GetDotnetVersion(IWebHostEnvironment _env, string Platform = "", bool SaveData = false)
+        public static List<AppConfigurationSystemInfo> GetDotnetVersion(IExecuteCommand _cmd,IWebHostEnvironment _env, string Platform = "", bool SaveData = false)
         {
-            var cmdResult = DotnetUiHelper.RunCommand(" dotnet --list-sdks ");
+            var cmdResult = _cmd.RunCommand(" dotnet --list-sdks ");
             if (cmdResult.Succeed)
             {
                 var sdks = cmdResult.Message.Split("\n").ToList();
@@ -355,9 +269,9 @@ namespace DotnetUI
                 return null;
         }
         // only checking for vscode
-        public static AppConfigurationSystemInfo GetCodeEditorVersion(IWebHostEnvironment _env, bool SaveData = false)
+        public static AppConfigurationSystemInfo GetCodeEditorVersion(IExecuteCommand _cmd,IWebHostEnvironment _env, bool SaveData = false)
         {
-            var cmdResult = DotnetUiHelper.RunCommand(" code --version ");
+            var cmdResult = _cmd.RunCommand(" code --version ");
             if (cmdResult.Succeed)
             {
                 var vscodeDetails = cmdResult.Message.Split("\n").ToList();
@@ -397,48 +311,7 @@ namespace DotnetUI
             return osInfo;
 
         }
-        public static ExectedCommandResult RunCommand(string Command)
-        {
-            var result = new ExectedCommandResult();
-            var cmd = new Process();
-            bool isWindows = System.Runtime.InteropServices.RuntimeInformation
-                                               .IsOSPlatform(OSPlatform.Windows);
-            //Console.WriteLine(isWindows);
-
-            if (isWindows)
-            {
-                cmd.StartInfo.FileName = "cmd.exe";
-            }
-            else
-            {
-                cmd.StartInfo.FileName = "/bin/bash";
-            }
-            cmd.StartInfo.RedirectStandardInput = true;
-            cmd.StartInfo.RedirectStandardOutput = true;
-            cmd.StartInfo.RedirectStandardError = true;
-
-            cmd.StartInfo.CreateNoWindow = false;
-            cmd.StartInfo.UseShellExecute = false;
-
-            cmd.Start();
-
-            /* execute "dir" */
-
-            cmd.StandardInput.WriteLine(Command);
-            cmd.StandardInput.Flush();
-            cmd.StandardInput.Close();
-            cmd.WaitForExit();
-            var output = cmd.StandardOutput.ReadToEnd();
-            var err = cmd.StandardError.ReadToEnd();
-            var code = cmd.ExitCode;
-            if (!string.IsNullOrEmpty(output))
-            {
-                result.Succeed = code == 0 ? true : false;
-                result.Message = output;
-                result.Error = err;
-            }
-            return result;
-        }
+       
 
 
 
